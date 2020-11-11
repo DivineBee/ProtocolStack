@@ -6,22 +6,60 @@
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
+import java.net.InetAddress;
 import java.net.SocketException;
 import java.util.zip.CRC32;
 
-public class Server {
+public class Server extends Thread{
+    private boolean running;
     boolean isPacketReceive = true;
     final String DELIMITER = "/";
-    // Step 1 : Create a socket to listen at port 1234 (Client)
-    DatagramSocket socket = new DatagramSocket(1234);
+
+    DatagramSocket socket;
     byte[] buf = new byte[65535];
     //instantiate a DatagramPacket to receive incoming messages
     DatagramPacket packetReceive = null;
 
     public Server() throws SocketException {
+        // create a socket to listen at port 1234 (Client)
+        socket = new DatagramSocket(1234);
     }
 
-    public void getPacket() throws IOException {
+    @Override
+    public void run() {
+        running = true;
+
+        while (running) {
+            DatagramPacket packet = new DatagramPacket(buf, buf.length);
+            try {
+                socket.receive(packet);
+
+                InetAddress address = packet.getAddress();
+                int port = packet.getPort();
+                String received = new String(packet.getData(), 0, packet.getLength());
+                System.out.println("Client:-" + received);
+
+                checkPacketIntegrity(received);
+
+                if (received.contains("quit")) {
+                    running = false;
+                    continue;
+                }
+
+                buf = "200".getBytes();
+                packet = new DatagramPacket(buf, buf.length, address, port);
+                socket.send(packet);
+                // Clear the buffer after every message. UDP supports packets up to 65535 bytes in length
+                buf = new byte[65535];
+
+            } catch(IOException exc) {
+                exc.printStackTrace();
+            }
+        }
+        socket.close();
+    }
+
+   /* public void getPacket() throws IOException {
         while (true) {
             // Step 2 : create a DatgramPacket to receive the convertByteToString.
             packetReceive = new DatagramPacket(buf, buf.length);
@@ -36,7 +74,8 @@ public class Server {
             checkPacketIntegrity(received);
 
             // Exit the server if the client sends "quit"
-            if (received.equalsIgnoreCase("quit"))
+            System.out.println("recieved  " + received);
+            if (received.contains("quit"))
             {
                 System.out.println("Client sent 'quit'.....EXITING");
                 break;
@@ -45,7 +84,7 @@ public class Server {
             // Clear the buffer after every message. UDP supports packets up to 65535 bytes in length
             buf = new byte[65535];
         }
-    }
+    }*/
 
     public void checkPacketIntegrity(String received) {
         String[] str = received.split(DELIMITER);
@@ -79,10 +118,8 @@ public class Server {
     }*/
     // nujen 3 metod gde ya otpravliaiu packet clientu
 
-    public static void main(String[] args) throws IOException
-    {
+    public static void main(String[] args) throws IOException {
         Server server = new Server();
-        server.getPacket();
-
+        server.start();
     }
 }

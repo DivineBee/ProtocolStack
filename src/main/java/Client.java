@@ -8,8 +8,8 @@ public class Client {
     Scanner sc = new Scanner(System.in);
 
     // Step 1:Create the socket object for carrying the convertByteToString.
-    DatagramSocket socket;
-    InetAddress ip;
+    private DatagramSocket socket;
+    private InetAddress ip;
     byte[] buf = null;
 
     public Client() throws UnknownHostException, SocketException {
@@ -23,8 +23,7 @@ public class Client {
             String message = sc.nextLine();
             // convert the String input into the byte array.
             buf = message.getBytes();
-
-            // Step 2 : Create the datagramPacket for sending
+            //Create the datagramPacket for sending
             DatagramPacket packetSend = new DatagramPacket(buf, buf.length, ip, 1234);
 
             //declare this or the Adler32 implementation
@@ -44,6 +43,10 @@ public class Client {
             // Step 3 : invoke the send call to actually send
             socket.send(packetSend);
 
+            // break the loop if user enters "quit"
+            if (message.contains("quit"))
+                break;
+
             //here
             //	receive response
             DatagramPacket responsePacket = new DatagramPacket(buf, buf.length);
@@ -57,10 +60,6 @@ public class Client {
             } else if(received.contains("200")) {
                 System.out.println("200 - everything ok.");
             }
-
-            // break the loop if user enters "quit"
-            if (message.equalsIgnoreCase("quit"))
-                break;
         }
     }
 
