@@ -1,3 +1,8 @@
+/**
+ * @author Beatrice V.
+ * @created 01.11.2020 - 20:14
+ * @project ProtocolStack
+ */
 import java.io.IOException;
 import java.net.*;
 import java.util.Scanner;
@@ -11,6 +16,7 @@ public class Client {
     private DatagramSocket socket;
     private InetAddress ip;
     byte[] buf = null;
+    byte[] receiverBuf = null;
 
     public Client() throws UnknownHostException, SocketException {
         socket = new DatagramSocket();
@@ -49,13 +55,17 @@ public class Client {
 
             //here
             //	receive response
-            DatagramPacket responsePacket = new DatagramPacket(buf, buf.length);
+            receiverBuf = new byte[20];
+            DatagramPacket responsePacket = new DatagramPacket(receiverBuf, receiverBuf.length);
             socket.receive(responsePacket);
 
             //	form a string out of response and return it
             String received = new String(responsePacket.getData(), 0, responsePacket.getLength());
             if(received.contains("404")){
                 // Step 3 : invoke the send call to actually send
+                System.out.println("404 - broken package.");
+                // Clear the buffer after every message. UDP supports packets up to 65535 bytes in length
+                buf = new byte[65535];
                 socket.send(packetSend);
             } else if(received.contains("200")) {
                 System.out.println("200 - everything ok.");
