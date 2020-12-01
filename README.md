@@ -1,8 +1,8 @@
 # Lab 2 - Implementation of a protocol stack
-####University: Technical University of Moldova  
-####Group: FAF 182   
-####Teacher: Alexandru Burlacu  
-####Student: Vizant Beatrice
+#### University: Technical University of Moldova  
+#### Group: FAF 182   
+#### Teacher: Alexandru Burlacu  
+#### Student: Vizant Beatrice
 
 ## Table of contents
 
@@ -32,7 +32,7 @@ connection between them two. Later on I divided these classes in 2 separate ones
 _EchoClient_ and _MainClient_ and put them to the according package(same for server). This separates  
 the runner class from methods and make code more readable and easier to modify in the future.  
 __All the code is commented, I will specify only the important parts and their realisation.__  
-#####Client  
+##### Client  
 In _EchoClient_ I made 2 constructors, one for local(which gets as parameter only the port) and  
 anohter one for the remote connection where the port and address will be passed. Next are the  
 methods which are called from _Main_ where first the client object is instantiated, after that  
@@ -43,7 +43,7 @@ more about it will be described below. After establishing connection the client 
 messages to the server, because i made a FTP like protocol I can send a file indicating URI of it.  
 Then the client can send different commands to the server with requests of what should be done with  
 the file(put, options, get).  
-#####Server
+##### Server
 Server too has constructors and fields which permit establishing connection with the client, also  
 it has a method which is of major importance is the _listen()_ which listens to client requests on  
 connection.

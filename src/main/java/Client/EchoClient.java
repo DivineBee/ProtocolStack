@@ -37,8 +37,8 @@ public class EchoClient {
         packetService.setCurrentPort(port);
     }
 
-    public EchoClient(InetAddress address) throws SocketException, UnknownHostException, InvalidKeySpecException, NoSuchAlgorithmException {
-        socket = new DatagramSocket();
+    public EchoClient(InetAddress address, int port) throws SocketException, UnknownHostException, InvalidKeySpecException, NoSuchAlgorithmException {
+        socket = new DatagramSocket(port);
         this.address = address;
         packetService = new PacketService();
         packetService.initializeBufferSize(false);
